@@ -1,0 +1,49 @@
+/**
+ * Represents a task in Ted's task list.
+ */
+public class Task {
+    private final String description;
+    private boolean isDone;
+
+    /**
+     * Creates an incomplete task with the given description.
+     *
+     * @param description the task description
+     */
+    public Task(String description) {
+        this.description = description;
+        this.isDone = false;
+    }
+
+    /**
+     * Marks this task as done.
+     */
+    public void markAsDone() {
+        isDone = true;
+    }
+
+    /**
+     * Marks this task as not done.
+     */
+    public void unmarkAsDone() {
+        isDone = false;
+    }
+
+    /**
+     * Returns the status icon used when displaying this task.
+     *
+     * @return {@code X} for a done task, or a space otherwise
+     */
+    public String getStatusIcon() {
+        return isDone ? "X" : " ";
+    }
+
+    /**
+     * Returns this task's description.
+     *
+     * @return the task description
+     */
+    public String getDescription() {
+        return description;
+    }
+}

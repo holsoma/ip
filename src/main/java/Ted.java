@@ -8,8 +8,7 @@ public class Ted {
         System.out.println("Hello! I'm Ted.\n\nWhat can I do for you?\n");
 
         Scanner scanner = new Scanner(System.in);
-        String[] tasks = new String[MAX_TASKS];
-        boolean[] completed = new boolean[MAX_TASKS];
+        Task[] tasks = new Task[MAX_TASKS];
         int taskCount = 0;
 
         while (scanner.hasNextLine()) {
@@ -21,17 +20,17 @@ public class Ted {
                 System.out.println("     Bye. Hope to see you again soon!");
             } else if (command.equals("list")) {
                 for (int i = 0; i < taskCount; i++) {
-                    String status = completed[i] ? "[X]" : "[ ]";
-                    System.out.println("     " + (i + 1) + "." + status + " " + tasks[i]);
+                    System.out.println("     " + (i + 1) + ".[" + tasks[i].getStatusIcon()
+                            + "] " + tasks[i].getDescription());
                 }
             } else if (command.equals("mark") || command.startsWith("mark ")) {
                 String taskNumber = command.substring("mark".length()).trim();
                 try {
                     int taskIndex = Integer.parseInt(taskNumber) - 1;
                     if (taskIndex >= 0 && taskIndex < taskCount) {
-                        completed[taskIndex] = true;
+                        tasks[taskIndex].markAsDone();
                         System.out.println("     Nice! I've marked this task as done:");
-                        System.out.println("       [X] " + tasks[taskIndex]);
+                        System.out.println("       [X] " + tasks[taskIndex].getDescription());
                     } else {
                         System.out.println("     That task number is not in the list.");
                     }
@@ -43,9 +42,9 @@ public class Ted {
                 try {
                     int taskIndex = Integer.parseInt(taskNumber) - 1;
                     if (taskIndex >= 0 && taskIndex < taskCount) {
-                        completed[taskIndex] = false;
+                        tasks[taskIndex].unmarkAsDone();
                         System.out.println("     OK, I've marked this task as not done yet:");
-                        System.out.println("       [ ] " + tasks[taskIndex]);
+                        System.out.println("       [ ] " + tasks[taskIndex].getDescription());
                     } else {
                         System.out.println("     That task number is not in the list.");
                     }
@@ -53,7 +52,7 @@ public class Ted {
                     System.out.println("     Please provide a valid task number.");
                 }
             } else if (taskCount < tasks.length) {
-                tasks[taskCount] = command;
+                tasks[taskCount] = new Task(command);
                 taskCount++;
                 System.out.println("     added: " + command);
             } else {
