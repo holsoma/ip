@@ -1,3 +1,5 @@
+package ted;
+
 /**
  * Represents a task in Ted's task list.
  */
@@ -8,7 +10,7 @@ public class Task {
     /**
      * Creates an incomplete task with the given description.
      *
-     * @param description the task description
+     * @param description The task description.
      */
     public Task(String description) {
         this.description = description;
@@ -32,7 +34,7 @@ public class Task {
     /**
      * Returns the status icon used when displaying this task.
      *
-     * @return {@code X} for a done task, or a space otherwise
+     * @return {@code X} for a done task, or a space otherwise.
      */
     public String getStatusIcon() {
         return isDone ? "X" : " ";
@@ -41,7 +43,7 @@ public class Task {
     /**
      * Returns this task's description.
      *
-     * @return the task description
+     * @return The task description.
      */
     public String getDescription() {
         return description;

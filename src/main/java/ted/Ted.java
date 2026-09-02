@@ -1,9 +1,19 @@
+package ted;
+
 import java.util.Scanner;
 
+/**
+ * Runs the text-based Ted task manager.
+ */
 public class Ted {
     private static final int MAX_TASKS = 100;
     private static final String SEPARATOR = "    ____________________________________________________________";
 
+    /**
+     * Starts Ted and processes commands from standard input.
+     *
+     * @param args Command-line arguments. Ted ignores these arguments.
+     */
     public static void main(String[] args) {
         System.out.println("Hello! I'm Ted.\n\nWhat can I do for you?\n");
 
