@@ -44,3 +44,11 @@ Follow the project-specific `seedu-java-coding-standard` skill in
 created, changed, reviewed, or refactored in this repository. This requirement is
 mandatory. Use American spelling in Java comments and Javadoc as required by that
 standard; use UK English elsewhere.
+
+## UI testing
+
+After each code update that changes user-visible behaviour, update
+test/ui-test-plan.md if needed and invoke the project-specific
+.codex/skills/test-ui/ skill. Stop at the first failed test and record the
+actual and expected output. Keep the latest console transcript in
+test/ui-test-session.txt.
