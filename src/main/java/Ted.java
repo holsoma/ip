@@ -24,14 +24,28 @@ public class Ted {
                     String status = completed[i] ? "[X]" : "[ ]";
                     System.out.println("     " + (i + 1) + "." + status + " " + tasks[i]);
                 }
-            } else if (command.startsWith("mark ")) {
-                String taskNumber = command.substring("mark ".length()).trim();
+            } else if (command.equals("mark") || command.startsWith("mark ")) {
+                String taskNumber = command.substring("mark".length()).trim();
                 try {
                     int taskIndex = Integer.parseInt(taskNumber) - 1;
                     if (taskIndex >= 0 && taskIndex < taskCount) {
                         completed[taskIndex] = true;
                         System.out.println("     Nice! I've marked this task as done:");
                         System.out.println("       [X] " + tasks[taskIndex]);
+                    } else {
+                        System.out.println("     That task number is not in the list.");
+                    }
+                } catch (NumberFormatException exception) {
+                    System.out.println("     Please provide a valid task number.");
+                }
+            } else if (command.equals("unmark") || command.startsWith("unmark ")) {
+                String taskNumber = command.substring("unmark".length()).trim();
+                try {
+                    int taskIndex = Integer.parseInt(taskNumber) - 1;
+                    if (taskIndex >= 0 && taskIndex < taskCount) {
+                        completed[taskIndex] = false;
+                        System.out.println("     OK, I've marked this task as not done yet:");
+                        System.out.println("       [ ] " + tasks[taskIndex]);
                     } else {
                         System.out.println("     That task number is not in the list.");
                     }
