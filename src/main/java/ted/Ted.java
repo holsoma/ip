@@ -62,25 +62,29 @@ public class Ted {
      * @return {@code true} when the command is {@code bye}; {@code false} otherwise.
      */
     private boolean processCommand(String command) {
-        if (command.equals(BYE_COMMAND)) {
-            System.out.println("     Bye. Hope to see you again soon!");
-            return true;
-        }
+        try {
+            if (command.equals(BYE_COMMAND)) {
+                System.out.println("     Bye. Hope to see you again soon!");
+                return true;
+            }
 
-        if (command.equals(LIST_COMMAND)) {
-            printTaskList();
-        } else if (isCommand(command, MARK_COMMAND)) {
-            updateTaskStatus(command, true);
-        } else if (isCommand(command, UNMARK_COMMAND)) {
-            updateTaskStatus(command, false);
-        } else if (isCommand(command, TODO_COMMAND)) {
-            handleTodo(command);
-        } else if (isCommand(command, DEADLINE_COMMAND)) {
-            handleDeadline(command);
-        } else if (isCommand(command, EVENT_COMMAND)) {
-            handleEvent(command);
-        } else {
-            System.out.println("     I do not understand that command.");
+            if (command.equals(LIST_COMMAND)) {
+                printTaskList();
+            } else if (isCommand(command, MARK_COMMAND)) {
+                updateTaskStatus(command, true);
+            } else if (isCommand(command, UNMARK_COMMAND)) {
+                updateTaskStatus(command, false);
+            } else if (isCommand(command, TODO_COMMAND)) {
+                handleTodo(command);
+            } else if (isCommand(command, DEADLINE_COMMAND)) {
+                handleDeadline(command);
+            } else if (isCommand(command, EVENT_COMMAND)) {
+                handleEvent(command);
+            } else {
+                throw new TedException("I'm sorry, but I don't know what that means :-(");
+            }
+        } catch (TedException exception) {
+            printError(exception.getMessage());
         }
 
         return false;
@@ -106,14 +110,13 @@ public class Ted {
     /**
      * Updates a task's completion status based on a mark or unmark command.
      */
-    private void updateTaskStatus(String command, boolean shouldMarkAsDone) {
+    private void updateTaskStatus(String command, boolean shouldMarkAsDone) throws TedException {
         String commandName = shouldMarkAsDone ? MARK_COMMAND : UNMARK_COMMAND;
         String taskNumber = command.substring(commandName.length()).trim();
         try {
             int taskIndex = Integer.parseInt(taskNumber) - 1;
             if (taskIndex < 0 || taskIndex >= taskCount) {
-                System.out.println("     That task number is not in the list.");
-                return;
+                throw new TedException("That task number is not in the list.");
             }
 
             if (shouldMarkAsDone) {
@@ -125,18 +128,17 @@ public class Ted {
             }
             System.out.println("       " + tasks[taskIndex]);
         } catch (NumberFormatException exception) {
-            System.out.println("     Please provide a valid task number.");
+            throw new TedException("Please provide a valid task number.");
         }
     }
 
     /**
      * Handles a todo command.
      */
-    private void handleTodo(String command) {
+    private void handleTodo(String command) throws TedException {
         String description = command.substring(TODO_COMMAND.length()).trim();
         if (description.isEmpty()) {
-            System.out.println("     The description of a todo cannot be empty.");
-            return;
+            throw new TedException("The description of a todo cannot be empty.");
         }
 
         addTask(new Todo(description));
@@ -145,13 +147,12 @@ public class Ted {
     /**
      * Handles a deadline command.
      */
-    private void handleDeadline(String command) {
+    private void handleDeadline(String command) throws TedException {
         String details = command.substring(DEADLINE_COMMAND.length()).trim();
         int separatorIndex = details.indexOf(DEADLINE_SEPARATOR);
         if (separatorIndex <= 0
                 || separatorIndex + DEADLINE_SEPARATOR.length() >= details.length()) {
-            System.out.println("     Use: deadline DESCRIPTION /by DATE_OR_TIME");
-            return;
+            throw new TedException("Use: deadline DESCRIPTION /by DATE_OR_TIME");
         }
 
         String description = details.substring(0, separatorIndex).trim();
@@ -162,7 +163,7 @@ public class Ted {
     /**
      * Handles an event command.
      */
-    private void handleEvent(String command) {
+    private void handleEvent(String command) throws TedException {
         String details = command.substring(EVENT_COMMAND.length()).trim();
         int fromSeparatorIndex = details.indexOf(EVENT_FROM_SEPARATOR);
         int toSeparatorIndex = details.indexOf(EVENT_TO_SEPARATOR,
@@ -171,8 +172,7 @@ public class Ted {
                 || toSeparatorIndex <= fromSeparatorIndex + EVENT_FROM_SEPARATOR.length()
                 || toSeparatorIndex + EVENT_TO_SEPARATOR.length() >= details.length();
         if (hasInvalidEventDetails) {
-            System.out.println("     Use: event DESCRIPTION /from START /to END");
-            return;
+            throw new TedException("Use: event DESCRIPTION /from START /to END");
         }
 
         String description = details.substring(0, fromSeparatorIndex).trim();
@@ -185,15 +185,23 @@ public class Ted {
     /**
      * Adds a task when capacity remains and prints the addition confirmation.
      */
-    private void addTask(Task task) {
+    private void addTask(Task task) throws TedException {
         if (taskCount >= tasks.length) {
-            System.out.println("     Ted cannot store any more tasks.");
-            return;
+            throw new TedException("Ted cannot store any more tasks.");
         }
 
         tasks[taskCount] = task;
         taskCount++;
         printTaskAdded(task, taskCount);
+    }
+
+    /**
+     * Prints a consistent error response for a command failure.
+     *
+     * @param message The explanation of the command failure.
+     */
+    private static void printError(String message) {
+        System.out.println("     OOPS!!! " + message);
     }
 
     /**
