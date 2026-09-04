@@ -41,7 +41,7 @@ $ list
      2.[D][X] return book (by: Sunday)
      3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
     ____________________________________________________________
-PASS: 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+PASS: 1.[T][ ] borrow book
 
 $ deadline do homework /by no idea :-p
     ____________________________________________________________
@@ -73,18 +73,10 @@ $ event missing end /from Monday
     ____________________________________________________________
 PASS: Use: event DESCRIPTION /from START /to END
 
-$ list
-    ____________________________________________________________
-     Here are the tasks in your list:
-     1.[T][ ] borrow book
-     2.[D][X] return book (by: Sunday)
-     3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
-     4.[D][ ] do homework (by: no idea :-p)
-    ____________________________________________________________
-PASS: Here are the tasks in your list:
-
 $ bye
     ____________________________________________________________
      Bye. Hope to see you again soon!
     ____________________________________________________________
 PASS: Bye. Hope to see you again soon!
+
+
