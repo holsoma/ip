@@ -1,4 +1,4 @@
-package ted;
+package ted.task;
 
 /**
  * Represents a task that must be completed by a specified date or time.
@@ -36,3 +36,4 @@ public class Deadline extends Task {
         return "[D]" + super.toString() + " (by: " + by + ")";
     }
 }
+

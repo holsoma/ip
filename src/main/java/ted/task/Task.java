@@ -1,4 +1,4 @@
-package ted;
+package ted.task;
 
 /**
  * Represents a task in Ted's task list.
@@ -59,3 +59,4 @@ public class Task {
         return "[" + getStatusIcon() + "] " + description;
     }
 }
+

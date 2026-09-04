@@ -1,4 +1,4 @@
-package ted;
+package ted.task;
 
 /**
  * Represents a task that takes place between specified start and end dates or times.
@@ -48,3 +48,4 @@ public class Event extends Task {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
 }
+

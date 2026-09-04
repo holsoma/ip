@@ -1,4 +1,4 @@
-package ted;
+package ted.exception;
 
 /**
  * Represents an error caused by an invalid command or command argument.
@@ -15,3 +15,4 @@ public class TedException extends Exception {
         super(message);
     }
 }
+

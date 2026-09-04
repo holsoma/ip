@@ -2,6 +2,12 @@ package ted;
 
 import java.util.Scanner;
 
+import ted.exception.TedException;
+import ted.task.Deadline;
+import ted.task.Event;
+import ted.task.Task;
+import ted.task.Todo;
+
 /**
  * Runs the text-based Ted task manager.
  */
@@ -217,3 +223,5 @@ public class Ted {
         System.out.println("     Now you have " + taskCount + " " + taskNoun + " in the list.");
     }
 }
+
+
