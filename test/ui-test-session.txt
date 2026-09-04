@@ -63,15 +63,27 @@ PASS: 4.[D][ ] do homework (by: no idea :-p)
 
 $ deadline missing date
     ____________________________________________________________
-     Use: deadline DESCRIPTION /by DATE_OR_TIME
+     OOPS!!! Use: deadline DESCRIPTION /by DATE_OR_TIME
     ____________________________________________________________
-PASS: Use: deadline DESCRIPTION /by DATE_OR_TIME
+PASS: OOPS!!! Use: deadline DESCRIPTION /by DATE_OR_TIME
 
 $ event missing end /from Monday
     ____________________________________________________________
-     Use: event DESCRIPTION /from START /to END
+     OOPS!!! Use: event DESCRIPTION /from START /to END
     ____________________________________________________________
-PASS: Use: event DESCRIPTION /from START /to END
+PASS: OOPS!!! Use: event DESCRIPTION /from START /to END
+
+$ todo
+    ____________________________________________________________
+     OOPS!!! The description of a todo cannot be empty.
+    ____________________________________________________________
+PASS: OOPS!!! The description of a todo cannot be empty.
+
+$ blah
+    ____________________________________________________________
+     OOPS!!! I'm sorry, but I don't know what that means :-(
+    ____________________________________________________________
+PASS: OOPS!!! I'm sorry, but I don't know what that means :-(
 
 $ bye
     ____________________________________________________________

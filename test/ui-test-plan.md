@@ -29,6 +29,18 @@ Aim: verify incomplete deadline and event commands are rejected without
 adding tasks.
 
 1. deadline missing date ->
-   Use: deadline DESCRIPTION /by DATE_OR_TIME
+   OOPS!!! Use: deadline DESCRIPTION /by DATE_OR_TIME
 2. event missing end /from Monday ->
-   Use: event DESCRIPTION /from START /to END
+   OOPS!!! Use: event DESCRIPTION /from START /to END
+
+## General command errors
+
+Aim: verify empty todo descriptions and unknown commands are reported without
+adding tasks or ending the session.
+
+1. todo -> OOPS!!! The description of a todo cannot be empty.
+2. blah -> OOPS!!! I'm sorry, but I don't know what that means :-(
+3. mark abc -> OOPS!!! Please provide a valid task number.
+4. mark 9 -> OOPS!!! That task number is not in the list.
+5. list -> 4.[D][ ] do homework (by: no idea :-p)
+6. bye -> Bye. Hope to see you again soon!
