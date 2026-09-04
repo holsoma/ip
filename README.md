@@ -1,18 +1,78 @@
-# Ted project template
+# Ted
 
-This is a project template for a greenfield Java project. It's named after the Java mascot _Duke_. Given below are instructions on how to use it.
+Ted is a command-line task manager for keeping track of todos, deadlines, and
+events. It is an individual project (iP) for CS2113 and is implemented in
+Java using object-oriented design.
 
-## Setting up in Intellij
+## Features
 
-Prerequisites: JDK 25, update Intellij to the most recent version.
+- Add todos with a description.
+- Add deadlines with a due date or time.
+- Add events with a start and end date or time.
+- List all tasks in the order they were added.
+- Mark tasks as done or not done.
+- Reject incomplete deadline and event commands with a usage message.
 
-1. Open Intellij (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-1. Open the project into Intellij as follows:
-   1. Click `Open`.
-   1. Select the project directory, and click `OK`.
-   1. If there are any further prompts, accept the defaults.
-1. Configure the project to use **JDK 25** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
-   In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/ted/Ted.java` file, right-click it, and choose `Run Ted.main()` (if the code editor is showing compile errors, try restarting the IDE).
+## Quick start
 
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+### Prerequisites
+
+- Java Development Kit (JDK) 25.
+
+### Run Ted
+
+Compile the source files from the project root:
+
+```text
+javac -d out src/main/java/ted/*.java
+```
+
+Start Ted:
+
+```text
+java -cp out ted.Ted
+```
+
+Ted also runs directly from IntelliJ IDEA by opening
+`src/main/java/ted/Ted.java` and running `Ted.main()`.
+
+## Usage
+
+| Command | Example | Description |
+| --- | --- | --- |
+| `todo DESCRIPTION` | `todo borrow book` | Adds a todo. |
+| `deadline DESCRIPTION /by DATE_OR_TIME` | `deadline return book /by Sunday` | Adds a deadline. |
+| `event DESCRIPTION /from START /to END` | `event project meeting /from Mon 2pm /to 4pm` | Adds an event. |
+| `list` | `list` | Displays all tasks. |
+| `mark TASK_NUMBER` | `mark 2` | Marks a task as done. |
+| `unmark TASK_NUMBER` | `unmark 2` | Marks a task as not done. |
+| `bye` | `bye` | Exits Ted. |
+
+Descriptions and dates are kept as entered. For example:
+
+```text
+todo borrow book
+    Got it. I've added this task:
+      [T][ ] borrow book
+
+deadline return book /by Sunday
+    Got it. I've added this task:
+      [D][ ] return book (by: Sunday)
+
+event project meeting /from Mon 2pm /to 4pm
+    Got it. I've added this task:
+      [E][ ] project meeting (from: Mon 2pm to: 4pm)
+```
+
+## Documentation and testing
+
+- [Ted User Guide](docs/README.md)
+- [UI test plan](test/ui-test-plan.md)
+- [Latest UI test transcript](test/ui-test-session.txt)
+
+## Acknowledgements
+
+OpenAI Codex was used extensively during development to review and refactor
+command handling, draft documentation, and run UI regression checks. The
+resulting changes were checked with Java 25 compilation and the documented UI
+test cases.
