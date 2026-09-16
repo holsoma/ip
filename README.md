@@ -11,6 +11,7 @@ Java using object-oriented design.
 - Add events with a start and end date or time.
 - List all tasks in the order they were added.
 - Mark tasks as done or not done.
+- Save tasks automatically in `data/ted.txt` and restore them when Ted starts.
 - Reject incomplete deadline and event commands with a usage message.
 - Report invalid commands and task numbers with clear error messages.
 

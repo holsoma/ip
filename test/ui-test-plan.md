@@ -48,3 +48,23 @@ adding tasks or ending the session.
 6. delete 9 -> OOPS!!! That task number is not in the list.
 7. list -> 3.[D][ ] do homework (by: no idea :-p)
 8. bye -> Bye. Hope to see you again soon!
+
+## Automatic saving and loading
+
+Aim: verify task types and completion state survive restart, and Ted starts
+with an empty list when the data file and its directory do not exist.
+
+The test starts with `data/ted.txt` and its parent directory absent, adds a
+todo, deadline, and event, marks the deadline done, then starts Ted again.
+
+Commands and expected output fragments:
+
+1. First run: `list` -> an empty task list.
+2. First run: `todo read book` -> `[T][ ] read book`.
+3. First run: `deadline return book /by June 6th` ->
+   `[D][ ] return book (by: June 6th)`.
+4. First run: `event project meeting /from Aug 6th 2pm /to 4pm` ->
+   `[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)`.
+5. First run: `mark 2` -> `[D][X] return book (by: June 6th)`.
+6. Second run: `list` -> all three tasks restored, with the deadline done.
+7. Second run: `bye` -> Bye. Hope to see you again soon!
