@@ -19,24 +19,27 @@ Java using object-oriented design.
 
 ### Prerequisites
 
-- Java Development Kit (JDK) 25.
+- Java Development Kit (JDK) 25 to build Ted. The resulting JAR runs on Java 17
+  or newer.
 
 ### Run Ted
 
-Compile the source files from the project root:
+Build the executable JAR from the project root with Java 25:
 
 ```text
-javac -d out src/main/java/ted/*.java
+powershell -ExecutionPolicy Bypass -File scripts/build-jar.ps1
 ```
 
-Start Ted:
+The JAR is created at `build/libs/ted-1.0.0.jar`. Copy it into an empty
+folder, open a command window in that folder, and run:
 
 ```text
-java -cp out ted.Ted
+java -jar "ted-1.0.0.jar"
 ```
 
-Ted also runs directly from IntelliJ IDEA by opening
-`src/main/java/ted/Ted.java` and running `Ted.main()`.
+Ted stores its task data in a `data` folder beside the JAR's working folder.
+The JAR is generated output and must not be committed. To distribute it,
+attach it to a GitHub release for the corresponding version.
 
 ## Usage
 
