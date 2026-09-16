@@ -1,5 +1,6 @@
 package ted;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -27,6 +28,18 @@ public class Ted {
     private static final String EVENT_TO_SEPARATOR = " /to ";
 
     private final ArrayList<Task> tasks = new ArrayList<>();
+    private final TedStorage storage = new TedStorage();
+
+    /**
+     * Creates Ted and restores tasks saved by an earlier run.
+     */
+    public Ted() {
+        try {
+            tasks.addAll(storage.load());
+        } catch (IOException exception) {
+            System.out.println("     OOPS!!! Could not load saved tasks: " + exception.getMessage());
+        }
+    }
 
     /**
      * Starts Ted and processes commands from standard input.
@@ -189,6 +202,7 @@ public class Ted {
                 tasks.get(taskIndex).unmarkAsDone();
                 System.out.println("     OK, I've marked this task as not done yet:");
             }
+            saveTasks();
             System.out.println("       " + tasks.get(taskIndex));
         } catch (NumberFormatException exception) {
             throw new TedException("Please provide a valid task number.");
@@ -207,6 +221,7 @@ public class Ted {
             }
 
             Task removedTask = tasks.remove(taskIndex);
+            saveTasks();
             System.out.println("     Noted. I've removed this task:");
             System.out.println("       " + removedTask);
             System.out.println("     Now you have " + tasks.size() + " "
@@ -271,7 +286,19 @@ public class Ted {
      */
     private void addTask(Task task) throws TedException {
         tasks.add(task);
+        saveTasks();
         printTaskAdded(task, tasks.size());
+    }
+
+    /**
+     * Saves the current task list and reports file errors without ending the command loop.
+     */
+    private void saveTasks() {
+        try {
+            storage.save(tasks);
+        } catch (IOException exception) {
+            System.out.println("     OOPS!!! Could not save tasks: " + exception.getMessage());
+        }
     }
 
     /**
