@@ -18,10 +18,12 @@ Commands and expected output fragments:
 4. mark 2 -> [D][X] return book (by: Sunday)
 5. list -> 1.[T][ ] borrow book, 2.[D][X] return book (by: Sunday),
    and 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
-6. deadline do homework /by no idea :-p ->
+6. delete 3 -> task removed and 2 tasks remain
+7. list -> 1.[T][ ] borrow book and 2.[D][X] return book (by: Sunday)
+8. deadline do homework /by no idea :-p ->
    [D][ ] do homework (by: no idea :-p)
-7. list -> 4.[D][ ] do homework (by: no idea :-p)
-8. bye -> Bye. Hope to see you again soon!
+9. list -> 3.[D][ ] do homework (by: no idea :-p)
+10. bye -> Bye. Hope to see you again soon!
 
 ## Invalid input
 
@@ -42,5 +44,7 @@ adding tasks or ending the session.
 2. blah -> OOPS!!! I'm sorry, but I don't know what that means :-(
 3. mark abc -> OOPS!!! Please provide a valid task number.
 4. mark 9 -> OOPS!!! That task number is not in the list.
-5. list -> 4.[D][ ] do homework (by: no idea :-p)
-6. bye -> Bye. Hope to see you again soon!
+5. delete abc -> OOPS!!! Please provide a valid task number.
+6. delete 9 -> OOPS!!! That task number is not in the list.
+7. list -> 3.[D][ ] do homework (by: no idea :-p)
+8. bye -> Bye. Hope to see you again soon!

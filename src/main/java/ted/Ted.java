@@ -1,5 +1,6 @@
 package ted;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import ted.exception.TedException;
@@ -12,12 +13,12 @@ import ted.task.Todo;
  * Runs the text-based Ted task manager.
  */
 public class Ted {
-    private static final int MAX_TASKS = 100;
     private static final String SEPARATOR = "    ____________________________________________________________";
     private static final String BYE_COMMAND = "bye";
     private static final String LIST_COMMAND = "list";
     private static final String MARK_COMMAND = "mark";
     private static final String UNMARK_COMMAND = "unmark";
+    private static final String DELETE_COMMAND = "delete";
     private static final String TODO_COMMAND = "todo";
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
@@ -25,8 +26,7 @@ public class Ted {
     private static final String EVENT_FROM_SEPARATOR = " /from ";
     private static final String EVENT_TO_SEPARATOR = " /to ";
 
-    private final Task[] tasks = new Task[MAX_TASKS];
-    private int taskCount = 0;
+    private final ArrayList<Task> tasks = new ArrayList<>();
 
     /**
      * Starts Ted and processes commands from standard input.
@@ -135,6 +135,8 @@ public class Ted {
                 updateTaskStatus(command, true);
             } else if (isCommand(command, UNMARK_COMMAND)) {
                 updateTaskStatus(command, false);
+            } else if (isCommand(command, DELETE_COMMAND)) {
+                deleteTask(command);
             } else if (isCommand(command, TODO_COMMAND)) {
                 handleTodo(command);
             } else if (isCommand(command, DEADLINE_COMMAND)) {
@@ -163,8 +165,8 @@ public class Ted {
      */
     private void printTaskList() {
         System.out.println("     Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println("     " + (i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println("     " + (i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -176,18 +178,39 @@ public class Ted {
         String taskNumber = command.substring(commandName.length()).trim();
         try {
             int taskIndex = Integer.parseInt(taskNumber) - 1;
-            if (taskIndex < 0 || taskIndex >= taskCount) {
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
                 throw new TedException("That task number is not in the list.");
             }
 
             if (shouldMarkAsDone) {
-                tasks[taskIndex].markAsDone();
+                tasks.get(taskIndex).markAsDone();
                 System.out.println("     Nice! I've marked this task as done:");
             } else {
-                tasks[taskIndex].unmarkAsDone();
+                tasks.get(taskIndex).unmarkAsDone();
                 System.out.println("     OK, I've marked this task as not done yet:");
             }
-            System.out.println("       " + tasks[taskIndex]);
+            System.out.println("       " + tasks.get(taskIndex));
+        } catch (NumberFormatException exception) {
+            throw new TedException("Please provide a valid task number.");
+        }
+    }
+
+    /**
+     * Removes a task selected by its one-based list number.
+     */
+    private void deleteTask(String command) throws TedException {
+        String taskNumber = command.substring(DELETE_COMMAND.length()).trim();
+        try {
+            int taskIndex = Integer.parseInt(taskNumber) - 1;
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                throw new TedException("That task number is not in the list.");
+            }
+
+            Task removedTask = tasks.remove(taskIndex);
+            System.out.println("     Noted. I've removed this task:");
+            System.out.println("       " + removedTask);
+            System.out.println("     Now you have " + tasks.size() + " "
+                    + (tasks.size() == 1 ? "task" : "tasks") + " in the list.");
         } catch (NumberFormatException exception) {
             throw new TedException("Please provide a valid task number.");
         }
@@ -247,13 +270,8 @@ public class Ted {
      * Adds a task when capacity remains and prints the addition confirmation.
      */
     private void addTask(Task task) throws TedException {
-        if (taskCount >= tasks.length) {
-            throw new TedException("Ted cannot store any more tasks.");
-        }
-
-        tasks[taskCount] = task;
-        taskCount++;
-        printTaskAdded(task, taskCount);
+        tasks.add(task);
+        printTaskAdded(task, tasks.size());
     }
 
     /**
