@@ -1,5 +1,5 @@
 === UI test session ===
-$ todo borrow book
+$ list
                                                                                 
                                             .  .                                
                                          .....  .       .                       
@@ -61,6 +61,12 @@ Hello! I'm Ted.
 What can I do for you?
 
     ____________________________________________________________
+     Here are the tasks in your list:
+    ____________________________________________________________
+PASS: Here are the tasks in your list:
+
+$ todo borrow book
+    ____________________________________________________________
      Got it. I've added this task:
        [T][ ] borrow book
      Now you have 1 task in the list.
@@ -90,6 +96,20 @@ $ mark 2
     ____________________________________________________________
 PASS: [D][X] return book (by: Sunday)
 
+$ unmark 2
+    ____________________________________________________________
+     OK, I've marked this task as not done yet:
+       [D][ ] return book (by: Sunday)
+    ____________________________________________________________
+PASS: [D][ ] return book (by: Sunday)
+
+$ mark 2
+    ____________________________________________________________
+     Nice! I've marked this task as done:
+       [D][X] return book (by: Sunday)
+    ____________________________________________________________
+PASS: [D][X] return book (by: Sunday)
+
 $ list
     ____________________________________________________________
      Here are the tasks in your list:
@@ -97,7 +117,7 @@ $ list
      2.[D][X] return book (by: Sunday)
      3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
     ____________________________________________________________
-PASS: 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+PASS: 2.[D][X] return book (by: Sunday)
 
 $ delete 3
     ____________________________________________________________
@@ -132,49 +152,74 @@ $ list
     ____________________________________________________________
 PASS: 3.[D][ ] do homework (by: no idea :-p)
 
+$ deadline missing date
+    ____________________________________________________________
+     OOPS!!! Use: deadline DESCRIPTION /by DATE_OR_TIME
+    ____________________________________________________________
+PASS: OOPS!!! Use: deadline DESCRIPTION /by DATE_OR_TIME
+
+$ event missing end /from Monday
+    ____________________________________________________________
+     OOPS!!! Use: event DESCRIPTION /from START /to END
+    ____________________________________________________________
+PASS: OOPS!!! Use: event DESCRIPTION /from START /to END
+
 $ todo
     ____________________________________________________________
      OOPS!!! The description of a todo cannot be empty.
     ____________________________________________________________
-PASS: description of a todo cannot be empty
+PASS: OOPS!!! The description of a todo cannot be empty.
 
 $ blah
     ____________________________________________________________
      OOPS!!! I'm sorry, but I don't know what that means :-(
     ____________________________________________________________
-PASS: I don't know what that means
+PASS: OOPS!!! I'm sorry, but I don't know what that means :-(
 
 $ mark abc
     ____________________________________________________________
      OOPS!!! Please provide a valid task number.
     ____________________________________________________________
-PASS: Please provide a valid task number.
+PASS: OOPS!!! Please provide a valid task number.
 
 $ mark 9
     ____________________________________________________________
      OOPS!!! That task number is not in the list.
     ____________________________________________________________
-PASS: That task number is not in the list.
+PASS: OOPS!!! That task number is not in the list.
 
 $ delete abc
     ____________________________________________________________
      OOPS!!! Please provide a valid task number.
     ____________________________________________________________
-PASS: Please provide a valid task number.
+PASS: OOPS!!! Please provide a valid task number.
 
 $ delete 9
     ____________________________________________________________
      OOPS!!! That task number is not in the list.
     ____________________________________________________________
-PASS: That task number is not in the list.
+PASS: OOPS!!! That task number is not in the list.
 
-$ event project meeting /from Mon 2pm /to 4pm
+$ mark 0
     ____________________________________________________________
-     Got it. I've added this task:
-       [E][ ] project meeting (from: Mon 2pm to: 4pm)
-     Now you have 4 tasks in the list.
+     OOPS!!! That task number is not in the list.
     ____________________________________________________________
-PASS: [E][ ] project meeting (from: Mon 2pm to: 4pm)
+PASS: OOPS!!! That task number is not in the list.
+
+$ delete 0
+    ____________________________________________________________
+     OOPS!!! That task number is not in the list.
+    ____________________________________________________________
+PASS: OOPS!!! That task number is not in the list.
+
+$ list
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] borrow book
+     2.[D][X] return book (by: Sunday)
+     3.[D][ ] do homework (by: no idea :-p)
+    ____________________________________________________________
+PASS: 3.[D][ ] do homework (by: no idea :-p)
 
 $ bye
     ____________________________________________________________
@@ -184,7 +229,8 @@ PASS: Bye. Hope to see you again soon!
 
 
 
-=== Restart persistence check ===
+=== restart with saved tasks ===
+=== UI test session ===
 $ list
                                                                                 
                                             .  .                                
@@ -251,10 +297,11 @@ What can I do for you?
      1.[T][ ] borrow book
      2.[D][X] return book (by: Sunday)
      3.[D][ ] do homework (by: no idea :-p)
-     4.[E][ ] project meeting (from: Mon 2pm to: 4pm)
     ____________________________________________________________
+PASS: 2.[D][X] return book (by: Sunday)
+
+$ bye
     ____________________________________________________________
      Bye. Hope to see you again soon!
     ____________________________________________________________
-
-PASS: all four tasks and deadline completion state restored after restart.
+PASS: Bye. Hope to see you again soon!
