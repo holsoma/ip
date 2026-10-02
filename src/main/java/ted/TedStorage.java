@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -38,7 +40,7 @@ public class TedStorage {
         for (int i = 0; i < lines.size(); i++) {
             try {
                 tasks.add(decodeTask(lines.get(i)));
-            } catch (IllegalArgumentException exception) {
+            } catch (IllegalArgumentException | DateTimeParseException exception) {
                 System.out.println("     OOPS!!! Skipping invalid saved task on line " + (i + 1) + ".");
             }
         }
@@ -67,7 +69,7 @@ public class TedStorage {
             type = "T";
         } else if (task instanceof Deadline deadline) {
             type = "D";
-            fields.add(encode(deadline.getBy()));
+            fields.add(encode(deadline.getBy().toString()));
         } else if (task instanceof Event event) {
             type = "E";
             fields.add(encode(event.getFrom()));
@@ -99,7 +101,7 @@ public class TedStorage {
             if (fields.length != 4) {
                 throw new IllegalArgumentException("Invalid deadline record.");
             }
-            task = new Deadline(description, decode(fields[3]));
+            task = new Deadline(description, LocalDate.parse(decode(fields[3])));
             break;
         case "E":
             if (fields.length != 5) {

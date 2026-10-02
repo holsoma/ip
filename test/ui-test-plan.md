@@ -1,70 +1,76 @@
 # UI test plan
 
-The UI tests exercise Ted through its standard input and check each response
-before continuing to the next command. The latest console transcript is stored
-in [ui-test-session.txt](ui-test-session.txt).
+Use Java 25 to compile and run Ted. Use the test-ui skill's
+`scripts/run_ui_tests.ps1` runner, with two separator lines per command.
+Stop at the first failure and record the expected and actual output.
+The latest complete console transcript is [ui-test-session.txt](ui-test-session.txt).
 
-## Task types and status
+## Commands, dates, and task operations
 
-Aim: verify that todos, deadlines, and events are created with their type
-icons and details, remain in one polymorphic list, and can be marked done.
+Aim: verify ISO dates display as `MMM dd yyyy`, a valid leap day is accepted,
+invalid dates do not add tasks, and existing task operations still work.
+Start in a new temporary working directory without `data/ted.txt`.
+Send these commands in order. Each list must contain exactly the entries
+shown, followed by the separator.
 
-Commands and expected output fragments:
+| # | Command | Expected output fragment |
+| --- | --- | --- |
+| 1 | `list` | `Here are the tasks in your list:` |
+| 2 | `todo borrow book` | `[T][ ] borrow book` |
+| 3 | `deadline return book /by 2026-10-15` | `[D][ ] return book (by: Oct 15 2026)` |
+| 4 | `event project meeting /from Mon 2pm /to 4pm` | `[E][ ] project meeting (from: Mon 2pm to: 4pm)` |
+| 5 | `mark 2` | `[D][X] return book (by: Oct 15 2026)` |
+| 6 | `unmark 2` | `[D][ ] return book (by: Oct 15 2026)` |
+| 7 | `mark 2` | `[D][X] return book (by: Oct 15 2026)` |
+| 8 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] borrow book`<br>`2.[D][X] return book (by: Oct 15 2026)`<br>`3.[E][ ] project meeting (from: Mon 2pm to: 4pm)` |
+| 9 | `delete 3` | `Now you have 2 tasks in the list.` |
+| 10 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] borrow book`<br>`2.[D][X] return book (by: Oct 15 2026)` |
+| 11 | `deadline do homework /by 2024-02-29` | `[D][ ] do homework (by: Feb 29 2024)` |
+| 12 | `deadline missing date` | `OOPS!!! Use: deadline DESCRIPTION /by yyyy-MM-dd` |
+| 13 | `deadline missing date /by ` | `OOPS!!! Use: deadline DESCRIPTION /by yyyy-MM-dd` |
+| 14 | `deadline invalid date /by 2026-02-30` | `OOPS!!! Please provide a valid deadline date in yyyy-MM-dd format.` |
+| 15 | `deadline invalid date /by 2025-02-29` | `OOPS!!! Please provide a valid deadline date in yyyy-MM-dd format.` |
+| 16 | `deadline invalid date /by 2026-13-01` | `OOPS!!! Please provide a valid deadline date in yyyy-MM-dd format.` |
+| 17 | `deadline invalid date /by Sunday` | `OOPS!!! Please provide a valid deadline date in yyyy-MM-dd format.` |
+| 18 | `deadline invalid date /by 15/10/2026` | `OOPS!!! Please provide a valid deadline date in yyyy-MM-dd format.` |
+| 19 | `deadline invalid date /by 2026-2-3` | `OOPS!!! Please provide a valid deadline date in yyyy-MM-dd format.` |
+| 20 | `event missing end /from Monday` | `OOPS!!! Use: event DESCRIPTION /from START /to END` |
+| 21 | `todo` | `OOPS!!! The description of a todo cannot be empty.` |
+| 22 | `blah` | `OOPS!!! I'm sorry, but I don't know what that means :-(` |
+| 23 | `mark abc` | `OOPS!!! Please provide a valid task number.` |
+| 24 | `mark 9` | `OOPS!!! That task number is not in the list.` |
+| 25 | `delete abc` | `OOPS!!! Please provide a valid task number.` |
+| 26 | `delete 9` | `OOPS!!! That task number is not in the list.` |
+| 27 | `mark 0` | `OOPS!!! That task number is not in the list.` |
+| 28 | `delete 0` | `OOPS!!! That task number is not in the list.` |
+| 29 | `unmark abc` | `OOPS!!! Please provide a valid task number.` |
+| 30 | `unmark 9` | `OOPS!!! That task number is not in the list.` |
+| 31 | `event project meeting /from Mon 2pm /to 4pm` | `[E][ ] project meeting (from: Mon 2pm to: 4pm)` |
+| 32 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] borrow book`<br>`2.[D][X] return book (by: Oct 15 2026)`<br>`3.[D][ ] do homework (by: Feb 29 2024)`<br>`4.[E][ ] project meeting (from: Mon 2pm to: 4pm)` |
+| 33 | `bye` | `Bye. Hope to see you again soon!` |
 
-1. todo borrow book -> [T][ ] borrow book
-2. deadline return book /by Sunday -> [D][ ] return book (by: Sunday)
-3. event project meeting /from Mon 2pm /to 4pm ->
-   [E][ ] project meeting (from: Mon 2pm to: 4pm)
-4. mark 2 -> [D][X] return book (by: Sunday)
-5. list -> 1.[T][ ] borrow book, 2.[D][X] return book (by: Sunday),
-   and 3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
-6. delete 3 -> task removed and 2 tasks remain
-7. list -> 1.[T][ ] borrow book and 2.[D][X] return book (by: Sunday)
-8. deadline do homework /by no idea :-p ->
-   [D][ ] do homework (by: no idea :-p)
-9. list -> 3.[D][ ] do homework (by: no idea :-p)
-10. bye -> Bye. Hope to see you again soon!
+## Restart with saved tasks
 
-## Invalid input
+Aim: verify all task types, dates, order, and completion state survive restart.
+Restart Ted in the same temporary working directory.
 
-Aim: verify incomplete deadline and event commands are rejected without
-adding tasks.
+| # | Command | Expected output fragment |
+| --- | --- | --- |
+| 1 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] borrow book`<br>`2.[D][X] return book (by: Oct 15 2026)`<br>`3.[D][ ] do homework (by: Feb 29 2024)`<br>`4.[E][ ] project meeting (from: Mon 2pm to: 4pm)` |
+| 2 | `bye` | `Bye. Hope to see you again soon!` |
 
-1. deadline missing date ->
-   OOPS!!! Use: deadline DESCRIPTION /by DATE_OR_TIME
-2. event missing end /from Monday ->
-   OOPS!!! Use: event DESCRIPTION /from START /to END
+## Invalid saved dates
 
-## General command errors
+Aim: verify impossible dates and older free-text deadlines are reported and
+skipped while subsequent valid records are loaded.
 
-Aim: verify empty todo descriptions and unknown commands are reported without
-adding tasks or ending the session.
+Append a deadline dated `2026-02-30` on line 5, a deadline dated `Sunday` on
+line 6, and an incomplete todo named `saved after invalid records` on line 7.
+Use the existing URL-safe Base64 encoding for string fields.
+Restart Ted in the same working directory and send these commands in order.
 
-1. todo -> OOPS!!! The description of a todo cannot be empty.
-2. blah -> OOPS!!! I'm sorry, but I don't know what that means :-(
-3. mark abc -> OOPS!!! Please provide a valid task number.
-4. mark 9 -> OOPS!!! That task number is not in the list.
-5. delete abc -> OOPS!!! Please provide a valid task number.
-6. delete 9 -> OOPS!!! That task number is not in the list.
-7. list -> 3.[D][ ] do homework (by: no idea :-p)
-8. bye -> Bye. Hope to see you again soon!
-
-## Automatic saving and loading
-
-Aim: verify task types and completion state survive restart, and Ted starts
-with an empty list when the data file and its directory do not exist.
-
-The test starts with `data/ted.txt` and its parent directory absent, adds a
-todo, deadline, and event, marks the deadline done, then starts Ted again.
-
-Commands and expected output fragments:
-
-1. First run: `list` -> an empty task list.
-2. First run: `todo read book` -> `[T][ ] read book`.
-3. First run: `deadline return book /by June 6th` ->
-   `[D][ ] return book (by: June 6th)`.
-4. First run: `event project meeting /from Aug 6th 2pm /to 4pm` ->
-   `[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)`.
-5. First run: `mark 2` -> `[D][X] return book (by: June 6th)`.
-6. Second run: `list` -> all three tasks restored, with the deadline done.
-7. Second run: `bye` -> Bye. Hope to see you again soon!
+| # | Command | Expected output fragment |
+| --- | --- | --- |
+| 1 | `list` | `OOPS!!! Skipping invalid saved task on line 5.`<br>`OOPS!!! Skipping invalid saved task on line 6.` |
+| 2 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] borrow book`<br>`2.[D][X] return book (by: Oct 15 2026)`<br>`3.[D][ ] do homework (by: Feb 29 2024)`<br>`4.[E][ ] project meeting (from: Mon 2pm to: 4pm)`<br>`5.[T][ ] saved after invalid records` |
+| 3 | `bye` | `Bye. Hope to see you again soon!` |

@@ -1,7 +1,9 @@
 package ted;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 
 import ted.exception.TedException;
@@ -27,7 +29,7 @@ public class Ted {
     private static final String EVENT_FROM_SEPARATOR = " /from ";
     private static final String EVENT_TO_SEPARATOR = " /to ";
 
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private TaskList tasks;
     private final TedStorage storage = new TedStorage();
 
     /**
@@ -35,9 +37,10 @@ public class Ted {
      */
     public Ted() {
         try {
-            tasks.addAll(storage.load());
+            tasks = new TaskList(storage.load());
         } catch (IOException exception) {
             System.out.println("     OOPS!!! Could not load saved tasks: " + exception.getMessage());
+            tasks = new TaskList();
         }
     }
 
@@ -178,8 +181,9 @@ public class Ted {
      */
     private void printTaskList() {
         System.out.println("     Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasks.get(i));
+        List<Task> currentTasks = tasks.getAll();
+        for (int i = 0; i < currentTasks.size(); i++) {
+            System.out.println("     " + (i + 1) + "." + currentTasks.get(i));
         }
     }
 
@@ -191,19 +195,14 @@ public class Ted {
         String taskNumber = command.substring(commandName.length()).trim();
         try {
             int taskIndex = Integer.parseInt(taskNumber) - 1;
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                throw new TedException("That task number is not in the list.");
-            }
-
+            Task task = tasks.setDone(taskIndex, shouldMarkAsDone);
             if (shouldMarkAsDone) {
-                tasks.get(taskIndex).markAsDone();
                 System.out.println("     Nice! I've marked this task as done:");
             } else {
-                tasks.get(taskIndex).unmarkAsDone();
                 System.out.println("     OK, I've marked this task as not done yet:");
             }
             saveTasks();
-            System.out.println("       " + tasks.get(taskIndex));
+            System.out.println("       " + task);
         } catch (NumberFormatException exception) {
             throw new TedException("Please provide a valid task number.");
         }
@@ -216,10 +215,6 @@ public class Ted {
         String taskNumber = command.substring(DELETE_COMMAND.length()).trim();
         try {
             int taskIndex = Integer.parseInt(taskNumber) - 1;
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                throw new TedException("That task number is not in the list.");
-            }
-
             Task removedTask = tasks.remove(taskIndex);
             saveTasks();
             System.out.println("     Noted. I've removed this task:");
@@ -251,12 +246,16 @@ public class Ted {
         int separatorIndex = details.indexOf(DEADLINE_SEPARATOR);
         if (separatorIndex <= 0
                 || separatorIndex + DEADLINE_SEPARATOR.length() >= details.length()) {
-            throw new TedException("Use: deadline DESCRIPTION /by DATE_OR_TIME");
+            throw new TedException("Use: deadline DESCRIPTION /by yyyy-MM-dd");
         }
 
         String description = details.substring(0, separatorIndex).trim();
         String by = details.substring(separatorIndex + DEADLINE_SEPARATOR.length()).trim();
-        addTask(new Deadline(description, by));
+        try {
+            addTask(new Deadline(description, LocalDate.parse(by)));
+        } catch (DateTimeParseException exception) {
+            throw new TedException("Please provide a valid deadline date in yyyy-MM-dd format.");
+        }
     }
 
     /**
@@ -295,7 +294,7 @@ public class Ted {
      */
     private void saveTasks() {
         try {
-            storage.save(tasks);
+            storage.save(tasks.getAll());
         } catch (IOException exception) {
             System.out.println("     OOPS!!! Could not save tasks: " + exception.getMessage());
         }
