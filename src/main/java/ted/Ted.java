@@ -1,6 +1,8 @@
 package ted;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -244,12 +246,16 @@ public class Ted {
         int separatorIndex = details.indexOf(DEADLINE_SEPARATOR);
         if (separatorIndex <= 0
                 || separatorIndex + DEADLINE_SEPARATOR.length() >= details.length()) {
-            throw new TedException("Use: deadline DESCRIPTION /by DATE_OR_TIME");
+            throw new TedException("Use: deadline DESCRIPTION /by yyyy-MM-dd");
         }
 
         String description = details.substring(0, separatorIndex).trim();
         String by = details.substring(separatorIndex + DEADLINE_SEPARATOR.length()).trim();
-        addTask(new Deadline(description, by));
+        try {
+            addTask(new Deadline(description, LocalDate.parse(by)));
+        } catch (DateTimeParseException exception) {
+            throw new TedException("Please provide a valid deadline date in yyyy-MM-dd format.");
+        }
     }
 
     /**
