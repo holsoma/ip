@@ -12,6 +12,7 @@ Java using object-oriented design.
 - List all tasks in the order they were added.
 - Find tasks by searching their descriptions for a keyword.
 - Mark tasks as done or not done.
+- Delete tasks you no longer need.
 - Save tasks automatically in `data/ted.txt` and restore them when Ted starts.
 - Reject incomplete deadline and event commands with a usage message.
 - Report invalid commands and task numbers with clear error messages.
@@ -20,27 +21,20 @@ Java using object-oriented design.
 
 ### Prerequisites
 
-- Java Development Kit (JDK) 25 to build Ted. The resulting JAR runs on Java 17
-  or newer.
+- Java Development Kit (JDK) 25, with `java` available in your terminal.
 
 ### Run Ted
 
-Build the executable JAR from the project root with Java 25:
+Download or clone the current source, open a terminal in the project root,
+and check that `java --version` reports Java 25. Then run:
 
 ```text
-powershell -ExecutionPolicy Bypass -File scripts/build-jar.ps1
+java src/main/java/ted/Ted.java
 ```
 
-The JAR is created at `build/libs/ted-1.0.0.jar`. Copy it into an empty
-folder, open a command window in that folder, and run:
-
-```text
-java -jar "ted-1.0.0.jar"
-```
-
-Ted stores its task data in a `data` folder beside the JAR's working folder.
-The JAR is generated output and must not be committed. To distribute it,
-attach it to a GitHub release for the corresponding version.
+Java compiles the source when it launches Ted. Tasks are stored in
+`data/ted.txt`, relative to the folder where you run the command.
+See the [User Guide](docs/README.md) for setup details and command examples.
 
 ## Usage
 
@@ -53,6 +47,7 @@ attach it to a GitHub release for the corresponding version.
 | `find KEYWORD` | `find book` | Displays tasks with the keyword in their description. |
 | `mark TASK_NUMBER` | `mark 2` | Marks a task as done. |
 | `unmark TASK_NUMBER` | `unmark 2` | Marks a task as not done. |
+| `delete TASK_NUMBER` | `delete 2` | Removes a task. |
 | `bye` | `bye` | Exits Ted. |
 
 Deadline dates are stored as `LocalDate` values and displayed as `MMM dd yyyy`
