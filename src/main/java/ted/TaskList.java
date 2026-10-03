@@ -36,6 +36,22 @@ public class TaskList {
     }
 
     /**
+     * Finds tasks whose descriptions contain a literal, case-sensitive keyword.
+     *
+     * @param keyword The text to search for in task descriptions.
+     * @return The matching tasks in their existing list order.
+     */
+    public List<Task> find(String keyword) {
+        List<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return List.copyOf(matchingTasks);
+    }
+
+    /**
      * Returns the number of tasks in the list.
      */
     public int size() {

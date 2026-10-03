@@ -10,6 +10,7 @@ Java using object-oriented design.
 - Add deadlines with a due date in `yyyy-MM-dd` format.
 - Add events with a start and end date or time.
 - List all tasks in the order they were added.
+- Find tasks by searching their descriptions for a keyword.
 - Mark tasks as done or not done.
 - Save tasks automatically in `data/ted.txt` and restore them when Ted starts.
 - Reject incomplete deadline and event commands with a usage message.
@@ -49,6 +50,7 @@ attach it to a GitHub release for the corresponding version.
 | `deadline DESCRIPTION /by yyyy-MM-dd` | `deadline return book /by 2026-10-15` | Adds a deadline. |
 | `event DESCRIPTION /from START /to END` | `event project meeting /from Mon 2pm /to 4pm` | Adds an event. |
 | `list` | `list` | Displays all tasks. |
+| `find KEYWORD` | `find book` | Displays tasks with the keyword in their description. |
 | `mark TASK_NUMBER` | `mark 2` | Marks a task as done. |
 | `unmark TASK_NUMBER` | `unmark 2` | Marks a task as not done. |
 | `bye` | `bye` | Exits Ted. |
@@ -73,6 +75,15 @@ event project meeting /from Mon 2pm /to 4pm
 
 Saved deadlines use `yyyy-MM-dd` dates. Older deadline records containing
 free text, such as `Sunday`, are reported as invalid and skipped when loading.
+
+Search matches a literal, case-sensitive substring in the description.
+For example, `find book` matches `borrow book` and `return book`, but
+`find Book` does not match those descriptions. Dates and event times are
+not searched. A missing keyword produces an error, and a search with no
+matches displays an empty result list.
+
+Search results are numbered from one in their existing task order. Use
+`list` to obtain the full task-list numbers before marking or deleting a task.
 
 ## Documentation and testing
 
