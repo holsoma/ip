@@ -74,3 +74,54 @@ Restart Ted in the same working directory and send these commands in order.
 | 1 | `list` | `OOPS!!! Skipping invalid saved task on line 5.`<br>`OOPS!!! Skipping invalid saved task on line 6.` |
 | 2 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] borrow book`<br>`2.[D][X] return book (by: Oct 15 2026)`<br>`3.[D][ ] do homework (by: Feb 29 2024)`<br>`4.[E][ ] project meeting (from: Mon 2pm to: 4pm)`<br>`5.[T][ ] saved after invalid records` |
 | 3 | `bye` | `Bye. Hope to see you again soon!` |
+
+## Find tasks
+
+Aim: verify searches work on empty and populated lists, include all task types
+and completion states, preserve task order, and only match descriptions.
+Check literal substring matching, case sensitivity, multiple words, whitespace,
+missing keywords, no matches, and search results after deletion.
+Use a separate new temporary working directory for this session.
+Each search or list response must contain exactly the entries shown,
+followed by the separator.
+
+| # | Command | Expected output fragment |
+| --- | --- | --- |
+| 1 | `find book` | `Here are the matching tasks in your list:` |
+| 2 | `todo wash dishes` | `[T][ ] wash dishes` |
+| 3 | `todo read book` | `[T][ ] read book` |
+| 4 | `deadline return book /by 2026-10-15` | `[D][ ] return book (by: Oct 15 2026)` |
+| 5 | `event book club /from Monday /to Tuesday` | `[E][ ] book club (from: Monday to: Tuesday)` |
+| 6 | `todo notebook` | `[T][ ] notebook` |
+| 7 | `todo Book launch` | `[T][ ] Book launch` |
+| 8 | `todo version 1.0` | `[T][ ] version 1.0` |
+| 9 | `mark 2` | `[T][X] read book` |
+| 10 | `find book` | `Here are the matching tasks in your list:`<br>`1.[T][X] read book`<br>`2.[D][ ] return book (by: Oct 15 2026)`<br>`3.[E][ ] book club (from: Monday to: Tuesday)`<br>`4.[T][ ] notebook` |
+| 11 | `find Book` | `Here are the matching tasks in your list:`<br>`1.[T][ ] Book launch` |
+| 12 | `find book club` | `Here are the matching tasks in your list:`<br>`1.[E][ ] book club (from: Monday to: Tuesday)` |
+| 13 | `find  book  ` | `Here are the matching tasks in your list:`<br>`1.[T][X] read book`<br>`2.[D][ ] return book (by: Oct 15 2026)`<br>`3.[E][ ] book club (from: Monday to: Tuesday)`<br>`4.[T][ ] notebook` |
+| 14 | `find Monday` | `Here are the matching tasks in your list:` |
+| 15 | `find Oct` | `Here are the matching tasks in your list:` |
+| 16 | `find [T]` | `Here are the matching tasks in your list:` |
+| 17 | `find .` | `Here are the matching tasks in your list:`<br>`1.[T][ ] version 1.0` |
+| 18 | `find missing` | `Here are the matching tasks in your list:` |
+| 19 | `find` | `OOPS!!! The keyword for find cannot be empty.` |
+| 20 | `find   ` | `OOPS!!! The keyword for find cannot be empty.` |
+| 21 | `findbook` | `OOPS!!! I'm sorry, but I don't know what that means :-(` |
+| 22 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] wash dishes`<br>`2.[T][X] read book`<br>`3.[D][ ] return book (by: Oct 15 2026)`<br>`4.[E][ ] book club (from: Monday to: Tuesday)`<br>`5.[T][ ] notebook`<br>`6.[T][ ] Book launch`<br>`7.[T][ ] version 1.0` |
+| 23 | `delete 3` | `Now you have 6 tasks in the list.` |
+| 24 | `find book` | `Here are the matching tasks in your list:`<br>`1.[T][X] read book`<br>`2.[E][ ] book club (from: Monday to: Tuesday)`<br>`3.[T][ ] notebook` |
+| 25 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] wash dishes`<br>`2.[T][X] read book`<br>`3.[E][ ] book club (from: Monday to: Tuesday)`<br>`4.[T][ ] notebook`<br>`5.[T][ ] Book launch`<br>`6.[T][ ] version 1.0` |
+| 26 | `bye` | `Bye. Hope to see you again soon!` |
+
+## Find tasks after restart
+
+Aim: verify searching restored tasks preserves descriptions, dates, completion
+states, and order. Restart Ted in the search test's working directory.
+
+| # | Command | Expected output fragment |
+| --- | --- | --- |
+| 1 | `find book` | `Here are the matching tasks in your list:`<br>`1.[T][X] read book`<br>`2.[E][ ] book club (from: Monday to: Tuesday)`<br>`3.[T][ ] notebook` |
+| 2 | `find Book` | `Here are the matching tasks in your list:`<br>`1.[T][ ] Book launch` |
+| 3 | `list` | `Here are the tasks in your list:`<br>`1.[T][ ] wash dishes`<br>`2.[T][X] read book`<br>`3.[E][ ] book club (from: Monday to: Tuesday)`<br>`4.[T][ ] notebook`<br>`5.[T][ ] Book launch`<br>`6.[T][ ] version 1.0` |
+| 4 | `bye` | `Bye. Hope to see you again soon!` |

@@ -19,6 +19,7 @@ public class Ted {
     private static final String SEPARATOR = "    ____________________________________________________________";
     private static final String BYE_COMMAND = "bye";
     private static final String LIST_COMMAND = "list";
+    private static final String FIND_COMMAND = "find";
     private static final String MARK_COMMAND = "mark";
     private static final String UNMARK_COMMAND = "unmark";
     private static final String DELETE_COMMAND = "delete";
@@ -147,6 +148,8 @@ public class Ted {
 
             if (command.equals(LIST_COMMAND)) {
                 printTaskList();
+            } else if (isCommand(command, FIND_COMMAND)) {
+                findTasks(command);
             } else if (isCommand(command, MARK_COMMAND)) {
                 updateTaskStatus(command, true);
             } else if (isCommand(command, UNMARK_COMMAND)) {
@@ -181,9 +184,28 @@ public class Ted {
      */
     private void printTaskList() {
         System.out.println("     Here are the tasks in your list:");
-        List<Task> currentTasks = tasks.getAll();
-        for (int i = 0; i < currentTasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + currentTasks.get(i));
+        printTasks(tasks.getAll());
+    }
+
+    /**
+     * Prints the tasks whose descriptions contain the supplied search keyword.
+     */
+    private void findTasks(String command) throws TedException {
+        String keyword = command.substring(FIND_COMMAND.length()).trim();
+        if (keyword.isEmpty()) {
+            throw new TedException("The keyword for find cannot be empty.");
+        }
+
+        System.out.println("     Here are the matching tasks in your list:");
+        printTasks(tasks.find(keyword));
+    }
+
+    /**
+     * Prints tasks numbered from one in the supplied list order.
+     */
+    private void printTasks(List<Task> tasksToPrint) {
+        for (int i = 0; i < tasksToPrint.size(); i++) {
+            System.out.println("     " + (i + 1) + "." + tasksToPrint.get(i));
         }
     }
 
