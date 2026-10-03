@@ -5,6 +5,109 @@ Use Java 25 to compile and run Ted. Use the test-ui skill's
 Stop at the first failure and record the expected and actual output.
 The latest complete console transcript is [ui-test-session.txt](ui-test-session.txt).
 
+## Release JAR smoke test
+
+Aim: verify the distributable JAR runs with Java 25 from a fresh folder
+containing only that JAR, including a folder name with spaces. Check every
+command, valid and invalid dates, search rules, Unicode text, automatic
+saving and restored tasks. Stop at the first failed command.
+
+Run from the project root with Java 25 available as `java`:
+
+```text
+pwsh -File test/run-release-smoke.ps1 -JarPath PATH_TO_JAR
+```
+
+Replace `PATH_TO_JAR` with the JAR's path. If `java` selects another version,
+also supply `-JavaExecutable` with the full path to Java 25. The script copies
+the JAR into a new folder under `_temp`, launches it with `java -jar`, and
+records both sessions in `test/ui-test-session.txt`. Generated files and
+task data stay under ignored `_temp` folders.
+
+The manual **Release JAR smoke test** GitHub Actions workflow checks the
+same prebuilt release asset on Windows, Linux and macOS with Java 25.
+Supply the asset's numeric GitHub ID and SHA-256. Each job verifies the
+downloaded file's checksum, runs this script and prints its transcript.
+
+The script checks complete response blocks. Empty list/search responses
+must contain the heading and no rows. Lists and searches below must contain
+exactly the specified rows in order, followed by Ted's separator.
+
+### Commands and saving
+
+| # | Command | Expected output fragment |
+| --- | --- | --- |
+| 1 | `list` | `Here are the tasks in your list:` with no rows |
+| 2 | `find book` | `Here are the matching tasks in your list:` with no rows |
+| 3 | `todo borrow book` | `[T][ ] borrow book`; `Now you have 1 task in the list.` |
+| 4 | `deadline return book /by 2026-10-15` | `[D][ ] return book (by: Oct 15 2026)`; total 2 tasks |
+| 5 | `event project meeting /from Mon 2pm /to 4pm` | `[E][ ] project meeting (from: Mon 2pm to: 4pm)`; total 3 tasks |
+| 6 | `todo notebook` | `[T][ ] notebook`; total 4 tasks |
+| 7 | `todo Book launch` | `[T][ ] Book launch`; total 5 tasks |
+| 8 | `todo café 読書` | `[T][ ] café 読書`; total 6 tasks |
+| 9 | `deadline leap day /by 2024-02-29` | `[D][ ] leap day (by: Feb 29 2024)`; total 7 tasks |
+| 10 | `deadline invalid date /by 2026-02-30` | `OOPS!!! Please provide a valid deadline date in yyyy-MM-dd format.` |
+| 11 | `list` | The seven initial rows shown below |
+| 12 | `mark 2` | `Nice! I've marked this task as done:` and `[D][X] return book (by: Oct 15 2026)` |
+| 13 | `find book` | `1.[T][ ] borrow book`<br>`2.[D][X] return book (by: Oct 15 2026)`<br>`3.[T][ ] notebook` |
+| 14 | `find Book` | `1.[T][ ] Book launch` only |
+| 15 | `find return book` | `1.[D][X] return book (by: Oct 15 2026)` only |
+| 16 | `find 読書` | `1.[T][ ] café 読書` only |
+| 17 | `find Mon` | Matching heading with no rows |
+| 18 | `find Oct` | Matching heading with no rows |
+| 19 | `find missing` | Matching heading with no rows |
+| 20 | `find` | `OOPS!!! The keyword for find cannot be empty.` |
+| 21 | `unmark 2` | `OK, I've marked this task as not done yet:` and `[D][ ] return book (by: Oct 15 2026)` |
+| 22 | `mark 6` | `Nice! I've marked this task as done:` and `[T][X] café 読書` |
+| 23 | `mark abc` | `OOPS!!! Please provide a valid task number.` |
+| 24 | `mark 99` | `OOPS!!! That task number is not in the list.` |
+| 25 | `delete abc` | `OOPS!!! Please provide a valid task number.` |
+| 26 | `delete 99` | `OOPS!!! That task number is not in the list.` |
+| 27 | `delete 4` | `[T][ ] notebook`; `Now you have 6 tasks in the list.` |
+| 28 | `list` | The six saved rows shown below |
+| 29 | `find book` | `1.[T][ ] borrow book`<br>`2.[D][ ] return book (by: Oct 15 2026)` |
+| 30 | `todo` | `OOPS!!! The description of a todo cannot be empty.` |
+| 31 | `deadline missing date` | `OOPS!!! Use: deadline DESCRIPTION /by yyyy-MM-dd` |
+| 32 | `event missing end /from Monday` | `OOPS!!! Use: event DESCRIPTION /from START /to END` |
+| 33 | `unknown` | `OOPS!!! I'm sorry, but I don't know what that means :-(` |
+| 34 | `bye` | `Bye. Hope to see you again soon!` |
+
+Initial list after command 11:
+
+```text
+1.[T][ ] borrow book
+2.[D][ ] return book (by: Oct 15 2026)
+3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+4.[T][ ] notebook
+5.[T][ ] Book launch
+6.[T][ ] café 読書
+7.[D][ ] leap day (by: Feb 29 2024)
+```
+
+Saved list after command 28:
+
+```text
+1.[T][ ] borrow book
+2.[D][ ] return book (by: Oct 15 2026)
+3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+4.[T][ ] Book launch
+5.[T][X] café 読書
+6.[D][ ] leap day (by: Feb 29 2024)
+```
+
+### Restart the same JAR
+
+Aim: verify task order, dates, event details, completion state and Unicode
+descriptions survive restarting in the same launch folder.
+
+| # | Command | Expected output fragment |
+| --- | --- | --- |
+| 1 | `list` | The six saved rows above |
+| 2 | `find book` | `1.[T][ ] borrow book`<br>`2.[D][ ] return book (by: Oct 15 2026)` |
+| 3 | `find Book` | `1.[T][ ] Book launch` only |
+| 4 | `find 読書` | `1.[T][X] café 読書` only |
+| 5 | `bye` | `Bye. Hope to see you again soon!` |
+
 ## Commands, dates, and task operations
 
 Aim: verify ISO dates display as `MMM dd yyyy`, a valid leap day is accepted,

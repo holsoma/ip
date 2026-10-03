@@ -1,6 +1,9 @@
 package ted;
 
+import java.io.Console;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -51,6 +54,10 @@ public class Ted {
      * @param args Command-line arguments. Ted ignores these arguments.
      */
     public static void main(String[] args) {
+        if (System.console() == null) {
+            // Preserve task descriptions when output is redirected to a pipe or file.
+            System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+        }
         new Ted().run();
     }
 
@@ -59,7 +66,10 @@ public class Ted {
      */
     private void run() {
         printWelcomeMessage();
-        Scanner scanner = new Scanner(System.in);
+        Console console = System.console();
+        Scanner scanner = console == null
+                ? new Scanner(System.in, StandardCharsets.UTF_8)
+                : new Scanner(console.reader());
 
         while (scanner.hasNextLine()) {
             System.out.println(SEPARATOR);

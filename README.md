@@ -25,16 +25,26 @@ Java using object-oriented design.
 
 ### Run Ted
 
-Download or clone the current source, open a terminal in the project root,
-and check that `java --version` reports Java 25. Then run:
+Download [ted-1.1.0.jar](https://github.com/holsoma/ip/releases/download/v1.1.0/ted-1.1.0.jar)
+from the [latest release](https://github.com/holsoma/ip/releases/latest).
+Put it in a folder of your choice, open a terminal there, and check that
+`java --version` reports Java 25. Then run:
+
+```text
+java -jar ted-1.1.0.jar
+```
+
+Tasks are stored in `data/ted.txt`, relative to the folder where you run
+the command. Use the terminal rather than double-clicking the JAR.
+See the [User Guide](https://holsoma.github.io/ip/) for setup details and
+command examples.
+
+To run from source instead, download or clone the project, open a terminal
+in the project root, and use JDK 25:
 
 ```text
 java src/main/java/ted/Ted.java
 ```
-
-Java compiles the source when it launches Ted. Tasks are stored in
-`data/ted.txt`, relative to the folder where you run the command.
-See the [User Guide](docs/README.md) for setup details and command examples.
 
 ## Usage
 

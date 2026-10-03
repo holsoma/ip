@@ -38,6 +38,10 @@ $startInfo.CreateNoWindow = $true
 $startInfo.RedirectStandardInput = $true
 $startInfo.RedirectStandardOutput = $true
 $startInfo.RedirectStandardError = $true
+$pipeEncoding = [System.Text.UTF8Encoding]::new($false)
+$startInfo.StandardInputEncoding = $pipeEncoding
+$startInfo.StandardOutputEncoding = $pipeEncoding
+$startInfo.StandardErrorEncoding = $pipeEncoding
 foreach ($argument in $ArgumentList) {
     [void]$startInfo.ArgumentList.Add($argument)
 }

@@ -26,17 +26,27 @@ Here are the tasks in your list:
 ## Quick start
 
 1. Install **Java Development Kit (JDK) 25**. In a terminal, run `java --version` and check that the version begins with `25`.
-2. [Download Ted's current source](https://github.com/holsoma/ip/archive/refs/heads/master.zip) and extract the ZIP file.
-3. Open a terminal in the extracted `ip-master` folder, which contains `src` and `docs`.
+2. [Download `ted-1.1.0.jar`](https://github.com/holsoma/ip/releases/download/v1.1.0/ted-1.1.0.jar) from the [latest release](https://github.com/holsoma/ip/releases/latest). Keep it as a `.jar` file; do not extract it.
+3. Put the JAR in a folder of your choice, for example `Ted`, and open a terminal in that folder.
 4. Start Ted with this terminal command:
 
    ```text
-   java src/main/java/ted/Ted.java
+   java -jar ted-1.1.0.jar
    ```
 
 5. When Ted greets you, enter `todo borrow book`, then `list`. Type `bye` to exit.
 
-Java compiles the source for you when you launch it this way. Keep the extracted folder so you can run the same command again and return to your saved tasks.
+Launch Ted from the same folder each time to return to your saved tasks. Use the terminal command rather than double-clicking the JAR, so you can enter commands and see Ted's replies.
+
+### Run from source instead
+
+If you prefer to run the source, [download the source for v1.1.0](https://github.com/holsoma/ip/archive/refs/tags/v1.1.0.zip), extract it, and open a terminal in the folder containing `src` and `docs`. With JDK 25, run:
+
+```text
+java src/main/java/ted/Ted.java
+```
+
+Java compiles the source when you launch it this way.
 
 ## Reading your tasks
 
@@ -173,7 +183,7 @@ Ted says goodbye and closes. Your task changes have already been saved.
 
 Ted saves after you add, mark, unmark or delete a task. It loads the saved list when you start it. There is no separate save command.
 
-Your tasks are stored in **`data/ted.txt`**, relative to the folder where you ran the launch command. In the quick start, that is `ip-master/data/ted.txt`. Always launch from the same folder to use the same list. To move Ted to another folder, take its `data` folder with you.
+Your tasks are stored in **`data/ted.txt`**, relative to the folder where you ran the launch command. For example, launching from a folder named `Ted` saves them in `Ted/data/ted.txt`. Always launch from the same folder to use the same list. To move Ted to another folder, take its `data` folder with you.
 
 A missing data file starts an empty list. If a saved record is invalid, Ted reports it and skips it; the next save keeps only the records that loaded successfully. Re-add skipped older deadlines containing text such as `Sunday` using `deadline DESCRIPTION /by yyyy-MM-dd`.
 
@@ -186,6 +196,8 @@ Ted prefixes command errors with `OOPS!!!` and lets you try again.
 | If you see… | What to do |
 | --- | --- |
 | `java` is not recognised or not found | Install JDK 25 and add its `bin` folder to your system's `PATH`. Reopen your terminal and check `java --version`. |
+| `Unable to access jarfile ted-1.1.0.jar` | Check that the JAR is downloaded and your terminal is open in the folder containing it. Use its exact filename. |
+| `UnsupportedClassVersionError` | Run `java --version` in the same terminal and make sure it uses Java 25. |
 | Java cannot find `src/main/java/ted/Ted.java` | Open your terminal in the extracted project folder before running the launch command. |
 | `Please provide a valid deadline date in yyyy-MM-dd format.` | Use a valid date, for example `2026-10-15`. |
 | `Use: deadline DESCRIPTION /by yyyy-MM-dd` | Include a description, `/by` and a date, with spaces as shown. |
