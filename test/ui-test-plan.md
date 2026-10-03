@@ -26,8 +26,10 @@ task data stay under ignored `_temp` folders.
 
 The manual **Release JAR smoke test** GitHub Actions workflow checks the
 same prebuilt release asset on Windows, Linux and macOS with Java 25.
-Supply the asset's numeric GitHub ID and SHA-256. Each job verifies the
-downloaded file's checksum, runs this script and prints its transcript.
+Supply the JAR's Base64-encoded bytes and SHA-256. Each job restores the
+same bytes, verifies their checksum, runs this script and prints its
+transcript. The workflow retains read-only repository permissions. The
+encoded JAR and checksum must fit GitHub's 65,535-character input limit.
 
 The script checks complete response blocks. Empty list/search responses
 must contain the heading and no rows. Lists and searches below must contain

@@ -62,7 +62,7 @@ try {
     [void]$record.AppendLine('=== Release JAR smoke test ===')
     $jarFile = (Resolve-Path -LiteralPath $JarPath).ProviderPath
     $jarName = Split-Path -Leaf $jarFile
-    $javaPath = (Get-Command -Name $JavaExecutable -CommandType Application).Source
+    $javaPath = (Get-Command -Name $JavaExecutable -CommandType Application | Select-Object -First 1).Source
     $runtime = @(& $javaPath --version 2>&1 | ForEach-Object { $_.ToString() })
     if ($LASTEXITCODE -ne 0 -or $runtime.Count -eq 0 -or $runtime[0] -notmatch '\b25(?:\.|\s|$)') {
         throw 'The release smoke test requires Java 25. Check java --version or supply -JavaExecutable.'
